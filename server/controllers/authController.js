@@ -1,10 +1,11 @@
 import db from "../config/db.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-export const register = async (req, res) => {
+export const register = (req, res) => {
   // checking if user alreday exits
   const checkUserQuery = "SELECT * FROM users WHERE email=?";
-  await db.query(checkUserQuery, [req.body.email], (error, result) => {
+  db.query(checkUserQuery, [req.body.email], (error, result) => {
     if (error) {
       return res.json(error);
     }
@@ -30,5 +31,25 @@ export const register = async (req, res) => {
     });
   });
 };
-export const login = (req, res) => {};
+export const login = (req, res) => {
+  const { email, password } = req.body;
+  // verifying user
+  const getUserQuery = "SELECT * FROM users WHERE email=?";
+  db.query(getUserQuery, [email], (error, result) => {
+    if (error) {
+      res.json(error);
+    }
+    if (result.length === 0) {
+      return res.status(404).json("User is not Registered!!");
+    }
+    // verifying password
+    const hashedPassword = result[0].password;
+    const isPasswordValid = bcrypt.compareSync(password, hashedPassword);
+    if (!isPasswordValid) {
+      return res.status(400).json("Invalid email or password");
+    }
+    // Generating a JWT tokenx
+    const token = jwt.sign({ id: result[0].id }, "jwtkey");
+  });
+};
 export const logout = (req, res) => {};
