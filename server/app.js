@@ -1,8 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 import auth from "./routes/auth.js";
-import cookieParser from "cookie-parser";
+import blogPost from "./routes/blogPost.js";
 
 // config env
 dotenv.config();
@@ -12,17 +11,14 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser);
-app.use(cors());
-app.use("/api", auth);
 
-//routes
-// app.use("/auth", authRoute);
+app.use("/api", auth);
+app.use("/blog", blogPost);
 
 app.get("/", (req, res) => {
   res.send("<h1>Home Page</h1>");
 });
 
-app.listen(5000, () => {
-  console.log("Server is running on port 5000");
+app.listen(8080, () => {
+  console.log("Server is running on port 8080");
 });

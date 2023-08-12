@@ -1,6 +1,10 @@
 import db from "../config/db.js";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import { hashpassword, comparePassword } from "../helper/auth.js";
 import jwt from "jsonwebtoken";
+
+dotenv.config();
 
 export const register = (req, res) => {
   // checking if user alreday exits
@@ -19,11 +23,11 @@ export const register = (req, res) => {
 
     // Register if user doesn't exits
     const insertUserQuery =
-      "INSERT INTO users(`name`,`email`,`password`) VALUES (?,?,?)";
+      "INSERT INTO users(`name`,`email`,`password`) VALUES (?)";
 
     const values = [req.body.name, req.body.email, hashedPassword];
 
-    db.query(insertUserQuery, values, (error, result) => {
+    db.query(insertUserQuery, [values], (error, result) => {
       if (error) {
         return res.json(error);
       }
@@ -32,10 +36,9 @@ export const register = (req, res) => {
   });
 };
 export const login = (req, res) => {
-  const { email, password } = req.body;
   // verifying user
   const getUserQuery = "SELECT * FROM users WHERE email=?";
-  db.query(getUserQuery, [email], (error, result) => {
+  db.query(getUserQuery, [req.body.email], (error, result) => {
     if (error) {
       res.json(error);
     }
@@ -43,13 +46,39 @@ export const login = (req, res) => {
       return res.status(404).json("User is not Registered!!");
     }
     // verifying password
-    const hashedPassword = result[0].password;
-    const isPasswordValid = bcrypt.compareSync(password, hashedPassword);
+
+    const isPasswordValid = comparePassword(
+      req.body.password,
+      result[0].password
+    );
+
     if (!isPasswordValid) {
       return res.status(400).json("Invalid email or password");
     }
     // Generating a JWT tokenx
-    const token = jwt.sign({ id: result[0].id }, "jwtkey");
+    const token = jwt.sign({ id: result[0].id }, process.env.JWT_KEY, {
+      expiresIn: "2d",
+    });
+    const { password, ...other } = result[0];
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .send({
+        success: true,
+        message: "Successfully Logged In",
+        other,
+      });
   });
 };
-export const logout = (req, res) => {};
+export const logout = (req, res) => {
+  res
+    .clearCookie("access_token", {
+      sameSite: "none",
+      expiresIn: new Date(0),
+      secure: true,
+    })
+    .status(200)
+    .json("Logged out Succefully");
+};

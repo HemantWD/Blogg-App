@@ -1,10 +1,15 @@
 import { Navbar } from "./components/Navbar";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 
 function App() {
   return (
-    <div>
+    <>
       <Navbar />
-    </div>
+      <div className="flex justify-center items-center h-96">
+        <Login />
+      </div>
+    </>
   );
 }
 
