@@ -2,7 +2,7 @@ export const dummyBlogs = [
   {
     id: 1,
     title: "Lorem ipsum dolor sit amet.",
-    description: " Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+    description: " .Lorem ipsum dolor sit amet, consectetur adipisicing elit",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNYwNQVHhJmeIdN-NGTzcSIRdmKU_fZ1Lw8Q&usqp=CAU",
   },
   {

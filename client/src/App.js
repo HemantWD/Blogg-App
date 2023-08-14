@@ -5,6 +5,7 @@ import { Register } from "./pages/Register";
 import { Footer } from "./components/Footer";
 import { Home } from "./pages/Home";
 import { Create } from "./pages/Create";
+import { UserPost } from "./pages/UserPost";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" Component={Login} />
         <Route path="/register" Component={Register} />
         <Route path="/create" Component={Create} />
+        <Route path="/userPost" Component={UserPost} />
       </Routes>
       <Footer />
     </>

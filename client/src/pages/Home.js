@@ -1,5 +1,5 @@
 import React from "react";
-import { dummyBlogs } from "../resources/context-api";
+import { dummyBlogs } from "../resources/dummy";
 
 export const Home = () => {
   return (

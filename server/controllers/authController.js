@@ -56,9 +56,7 @@ export const login = (req, res) => {
       return res.status(400).json("Invalid email or password");
     }
     // Generating a JWT tokenx
-    const token = jwt.sign({ id: result[0].id }, process.env.JWT_KEY, {
-      expiresIn: "2d",
-    });
+    const token = jwt.sign({ id: result[0].id }, process.env.JWT_KEY);
     const { password, ...other } = result[0];
     res
       .cookie("access_token", token, {
@@ -74,11 +72,7 @@ export const login = (req, res) => {
 };
 export const logout = (req, res) => {
   res
-    .clearCookie("access_token", {
-      sameSite: "none",
-      expiresIn: new Date(0),
-      secure: true,
-    })
+    .clearCookie("access_token")
     .status(200)
-    .json("Logged out Succefully");
+    .json({ message: "Logged out Succefully" });
 };

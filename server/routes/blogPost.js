@@ -11,6 +11,5 @@ const router = express.Router();
 router.get("/id", getBlogs);
 router.post("/add", addBlog);
 router.delete("/:id", deleteBlog);
-// router.update("/:id", updateBlog);
 
 export default router;

@@ -1,7 +1,30 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/context-api";
 
 export const Login = () => {
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const [err, setErr] = useState(null);
+  const navigate = useNavigate();
+
+  const { loginUser } = useContext(AuthContext);
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await loginUser(inputs);
+      navigate("/");
+    } catch (error) {
+      setErr(error.response.data);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center h-96">
       <form
@@ -19,6 +42,9 @@ export const Login = () => {
           </label>
           <input
             type="email"
+            id="email"
+            onChange={handleChange}
+            name="email"
             className="mt-1 p-2 block w-96 rounded-md border border-black focus:ring focus:ring-blue-200"
           />
         </div>
@@ -29,12 +55,15 @@ export const Login = () => {
           <input
             type="password"
             id="password"
+            onChange={handleChange}
+            name="password"
             className="mt-1 p-2 block w-96 rounded-md border border-black focus:ring focus:ring-blue-200"
           />
         </div>
         <div>
           <button
             type="submit"
+            onClick={handleSubmit}
             className="w-52 p-1 bg-green-400 text-white rounded-md hover:bg-green-600 focus:ring
            focus:ring-blue-200 focus:ring-offset-2 focus:ring-offset-blue-100"
           >
@@ -48,6 +77,7 @@ export const Login = () => {
             <Link to="/register">Register</Link>
           </button>
         </div>
+        {err && <p className="text-yellow-400 text-sm text-center">{err}</p>}
       </form>
     </div>
   );
